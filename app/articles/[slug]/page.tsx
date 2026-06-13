@@ -176,6 +176,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               商务考察包车
             </Link>
             <Link
+              href="/airport-transfer.html"
+              className="rounded-md border border-ink/10 px-4 py-2 text-ink/70 transition hover:border-gold hover:text-ink"
+            >
+              机场接送
+            </Link>
+            <Link
               href="/contact.html"
               className="rounded-md border border-ink/10 px-4 py-2 text-ink/70 transition hover:border-gold hover:text-ink"
             >

@@ -6,14 +6,14 @@ import { siteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "印尼租车攻略｜雅加达租车｜巴厘岛包车｜Amin Zuche",
   description:
-    "Amin Zuche 印尼中文租车攻略，覆盖雅加达租车、巴厘岛包车、机场接送、商务考察、长期用车和车型选择。",
+    "Amin Zuche 印尼中文租车攻略，覆盖雅加达租车、巴厘岛包车、机场接送、商务考察、工业园考察、矿山考察和长期用车。",
   alternates: {
     canonical: "/articles"
   },
   openGraph: {
     title: "印尼租车攻略｜Amin Zuche",
     description:
-      "印尼中文租车 SEO 攻略，帮助中国游客、商务考察和驻外人员规划用车。",
+      "印尼中文租车 SEO 攻略，帮助中国游客、商务考察、工业园考察、矿山考察和驻外人员规划用车。",
     url: `${siteUrl}/articles`,
     type: "website"
   }
@@ -31,7 +31,7 @@ export default function ArticlesPage() {
             印尼租车攻略
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-white/68">
-            围绕雅加达租车、巴厘岛包车、机场接送、商务考察和长期用车，整理适合中文客户的出行参考。
+            围绕雅加达租车、巴厘岛包车、机场接送、商务考察、工业园考察、矿山考察和长期用车，整理适合中文客户的出行参考。
           </p>
         </div>
       </section>
