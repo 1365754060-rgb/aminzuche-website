@@ -25,7 +25,24 @@ function base64Url(input: string) {
 }
 
 function getPrivateKey() {
-  return process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  const privateKey = process.env.GOOGLE_SHEETS_PRIVATE_KEY?.trim();
+
+  if (!privateKey) {
+    return undefined;
+  }
+
+  if (privateKey.startsWith("{")) {
+    try {
+      const serviceAccount = JSON.parse(privateKey) as { private_key?: string };
+      return serviceAccount.private_key?.replace(/\\n/g, "\n");
+    } catch {
+      return privateKey;
+    }
+  }
+
+  return privateKey
+    .replace(/^["']|["']$/g, "")
+    .replace(/\\n/g, "\n");
 }
 
 function assertGoogleSheetsConfig() {
