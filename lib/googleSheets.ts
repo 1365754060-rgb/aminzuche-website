@@ -16,11 +16,99 @@ export type LeadPayload = {
 const googleTokenUrl = "https://oauth2.googleapis.com/token";
 const googleSheetsScope = "https://www.googleapis.com/auth/spreadsheets";
 
-async function buildGoogleApiError(response: Response, fallback: string) {
-  const body = await response.text();
-  const detail = body ? `${response.status} ${body}` : `${response.status}`;
+type GoogleApiErrorBody = {
+  error?: {
+    code?: number;
+    message?: string;
+    status?: string;
+    errors?: unknown;
+  };
+};
 
-  return new Error(`${fallback}: ${detail}`);
+class GoogleApiError extends Error {
+  errors?: unknown;
+  response?: {
+    data: unknown;
+  };
+  status?: number;
+
+  constructor(message: string, response: Response, data: unknown) {
+    super(message);
+    this.name = "GoogleApiError";
+    this.status = response.status;
+    this.response = { data };
+    this.errors =
+      typeof data === "object" && data !== null && "error" in data
+        ? (data as GoogleApiErrorBody).error?.errors
+        : undefined;
+  }
+}
+
+function parseGoogleApiBody(body: string) {
+  try {
+    return JSON.parse(body) as GoogleApiErrorBody;
+  } catch {
+    return body;
+  }
+}
+
+async function buildGoogleApiError(response: Response) {
+  const body = await response.text();
+  const data = body ? parseGoogleApiBody(body) : {};
+  const message =
+    typeof data === "object" && data !== null && "error" in data
+      ? (data as GoogleApiErrorBody).error?.message || response.statusText
+      : response.statusText || body || `Google API HTTP ${response.status}`;
+
+  return new GoogleApiError(message, response, data);
+}
+
+function getGoogleErrorDetails(error: unknown) {
+  if (error instanceof GoogleApiError) {
+    return {
+      message: error.message,
+      responseData: error.response?.data,
+      errors: error.errors,
+      stack: error.stack
+    };
+  }
+
+  if (error instanceof Error) {
+    return {
+      message: error.message,
+      responseData: undefined,
+      errors: undefined,
+      stack: error.stack
+    };
+  }
+
+  return {
+    message: String(error),
+    responseData: undefined,
+    errors: undefined,
+    stack: undefined
+  };
+}
+
+function logGoogleSheetsError(
+  error: unknown,
+  context: {
+    spreadsheetId?: string;
+    sheetName?: string;
+    range?: string;
+  }
+) {
+  const details = getGoogleErrorDetails(error);
+
+  console.error("Google Sheets integration error", {
+    message: details.message,
+    responseData: details.responseData,
+    errors: details.errors,
+    stack: details.stack,
+    spreadsheetId: context.spreadsheetId,
+    sheetName: context.sheetName,
+    range: context.range
+  });
 }
 
 function base64Url(input: string) {
@@ -102,7 +190,7 @@ async function getGoogleAccessToken() {
   });
 
   if (!response.ok) {
-    throw await buildGoogleApiError(response, "GOOGLE_TOKEN_REQUEST_FAILED");
+    throw await buildGoogleApiError(response);
   }
 
   const token = (await response.json()) as { access_token?: string };
@@ -115,35 +203,53 @@ async function getGoogleAccessToken() {
 }
 
 export async function appendLeadToGoogleSheet(lead: LeadPayload) {
-  const { spreadsheetId, sheetName } = assertGoogleSheetsConfig();
-  const accessToken = await getGoogleAccessToken();
-  const range = encodeURIComponent(`${sheetName}!A:J`);
-  const endpoint = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      values: [
-        [
-          lead.submittedAt,
-          lead.companyName,
-          lead.contactName,
-          lead.contact,
-          lead.social,
-          lead.visitDate,
-          lead.peopleCount,
-          lead.city,
-          lead.projectType,
-          lead.request
-        ]
-      ]
-    })
-  });
+  let spreadsheetId: string | undefined;
+  let sheetName: string | undefined;
+  let range: string | undefined;
 
-  if (!response.ok) {
-    throw await buildGoogleApiError(response, "GOOGLE_SHEETS_APPEND_FAILED");
+  try {
+    const config = assertGoogleSheetsConfig();
+    spreadsheetId = config.spreadsheetId;
+    sheetName = config.sheetName;
+    range = `${sheetName}!A:J`;
+
+    const accessToken = await getGoogleAccessToken();
+    const endpoint = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(
+      range
+    )}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        values: [
+          [
+            lead.submittedAt,
+            lead.companyName,
+            lead.contactName,
+            lead.contact,
+            lead.social,
+            lead.visitDate,
+            lead.peopleCount,
+            lead.city,
+            lead.projectType,
+            lead.request
+          ]
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw await buildGoogleApiError(response);
+    }
+  } catch (error) {
+    logGoogleSheetsError(error, {
+      spreadsheetId,
+      sheetName,
+      range
+    });
+    throw error;
   }
 }
