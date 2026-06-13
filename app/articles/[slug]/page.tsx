@@ -83,6 +83,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         }))
       }
     : null;
+  const relatedArticles = articles
+    .filter((item) => item.slug !== article.slug)
+    .filter(
+      (item) =>
+        item.category === article.category ||
+        item.city === article.city ||
+        item.keywords.some((keyword) => article.keywords.includes(keyword))
+    )
+    .slice(0, 3);
 
   return (
     <main className="bg-white text-ink">
@@ -161,6 +170,33 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               提交用车需求
             </Link>
           </div>
+
+          {relatedArticles.length > 0 ? (
+            <section className="mt-12">
+              <h2 className="text-2xl font-semibold tracking-normal text-ink">
+                相关文章推荐
+              </h2>
+              <div className="mt-5 grid gap-4">
+                {relatedArticles.map((related) => (
+                  <Link
+                    key={related.slug}
+                    href={`/articles/${related.slug}`}
+                    className="rounded-md border border-ink/10 bg-white p-5 transition hover:border-gold/50 hover:shadow-business"
+                  >
+                    <p className="text-xs font-semibold text-gold">
+                      {related.category} · {related.city}
+                    </p>
+                    <h3 className="mt-3 text-lg font-semibold leading-7 text-ink">
+                      {related.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-ink/62">
+                      {related.description}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           <nav className="mt-8 flex flex-wrap gap-3 text-sm font-semibold">
             <Link
