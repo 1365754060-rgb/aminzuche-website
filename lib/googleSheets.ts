@@ -16,6 +16,13 @@ export type LeadPayload = {
 const googleTokenUrl = "https://oauth2.googleapis.com/token";
 const googleSheetsScope = "https://www.googleapis.com/auth/spreadsheets";
 
+async function buildGoogleApiError(response: Response, fallback: string) {
+  const body = await response.text();
+  const detail = body ? `${response.status} ${body}` : `${response.status}`;
+
+  return new Error(`${fallback}: ${detail}`);
+}
+
 function base64Url(input: string) {
   return Buffer.from(input)
     .toString("base64")
@@ -95,7 +102,7 @@ async function getGoogleAccessToken() {
   });
 
   if (!response.ok) {
-    throw new Error("GOOGLE_TOKEN_REQUEST_FAILED");
+    throw await buildGoogleApiError(response, "GOOGLE_TOKEN_REQUEST_FAILED");
   }
 
   const token = (await response.json()) as { access_token?: string };
@@ -137,6 +144,6 @@ export async function appendLeadToGoogleSheet(lead: LeadPayload) {
   });
 
   if (!response.ok) {
-    throw new Error("GOOGLE_SHEETS_APPEND_FAILED");
+    throw await buildGoogleApiError(response, "GOOGLE_SHEETS_APPEND_FAILED");
   }
 }
