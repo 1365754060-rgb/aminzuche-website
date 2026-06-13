@@ -280,9 +280,9 @@ export function ContactCTAForm() {
     <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
       <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
         <div>
-          <SectionHeading tag="询盘表单" title="提交用车需求" />
+          <SectionHeading tag="询盘表单" title="提交考察用车需求" />
           <p className="text-base leading-7 text-ink/65">
-            请填写日期、人数、大致行程和联系方式。配置 WhatsApp 后，表单内容会自动带入对话。
+            请填写公司、人数、城市、项目类型和行程需求。提交后会自动生成 WhatsApp 咨询消息，方便快速确认路线和车型。
           </p>
         </div>
         <LeadForm whatsappUrl={whatsappUrl} />

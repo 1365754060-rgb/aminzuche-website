@@ -10,7 +10,7 @@ export function WhatsAppFloat() {
         WhatsApp咨询
       </a>
       <a
-        href="#lead-form"
+        href="/contact.html#lead-form"
         className="mt-2 block rounded-md border border-white/15 px-4 py-2 text-center text-xs font-medium text-white/82 transition hover:border-white/35 hover:text-white"
       >
         提交用车需求

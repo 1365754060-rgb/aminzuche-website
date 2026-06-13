@@ -50,3 +50,7 @@ a {
   border-color: #c8a35f;
   background: rgba(255, 255, 255, 0.12);
 }
+
+.form-field option {
+  color: #111827;
+}

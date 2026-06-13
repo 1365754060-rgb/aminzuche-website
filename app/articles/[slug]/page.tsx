@@ -161,13 +161,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <div className="mt-12 rounded-md bg-sand/70 p-6">
             <h2 className="text-xl font-semibold text-ink">需要安排印尼用车？</h2>
             <p className="mt-3 text-sm leading-6 text-ink/65">
-              请提交城市、日期、人数和行程需求，我们会根据路线和车型为你确认安排。
+              请提交公司、城市、日期、人数和考察需求，我们会根据路线和车型为你确认安排。
             </p>
             <Link
-              href="/#lead-form"
+              href="/contact.html#lead-form"
               className="mt-5 inline-flex rounded-md bg-gold px-5 py-3 text-sm font-semibold text-ink transition hover:bg-[#d5b56d]"
             >
-              提交用车需求
+              提交考察用车需求
             </Link>
           </div>
 
