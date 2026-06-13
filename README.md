@@ -21,5 +21,19 @@ npm run dev
 - FAQ 模块
 - 联系方式模块
 - 留资表单
+- SEO 文章列表 `/articles`
+- SEO 文章详情 `/articles/[slug]`
+- `robots.txt`
+- `sitemap.xml`
 
-当前留资表单为静态前端表单，尚未接入后端提交接口。
+## SEO 与统计配置
+
+以下配置通过 Cloudflare Pages 环境变量设置，不要写入 `.env` 并提交：
+
+```bash
+NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=你的Google验证码
+NEXT_PUBLIC_BAIDU_TONGJI_ID=你的百度统计ID
+NEXT_PUBLIC_WHATSAPP_URL=https://wa.me/你的号码
+```
+
+当前询盘表单会在配置 `NEXT_PUBLIC_WHATSAPP_URL` 后打开 WhatsApp 并带上表单内容；尚未接入后端数据库或邮件发送接口。

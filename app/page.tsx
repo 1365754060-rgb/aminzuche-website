@@ -1,281 +1,202 @@
-import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  CTASection,
+  ContactCTAForm,
+  FAQBlock,
+  FeatureGrid,
+  FleetImage,
+  GuideCards,
+  JsonLd,
+  PageShell,
+  RouteLine,
+  SectionHeading
+} from "@/components/AminLayout";
+import {
+  faqSchema,
+  homeFaqs,
+  localBusinessSchema
+} from "@/lib/aminContent";
+import { siteName, siteUrl, whatsappUrl } from "@/lib/site";
 
-const services = ["雅加达租车", "巴厘岛包车", "机场接送", "商务考察", "长期用车"];
+export const metadata: Metadata = {
+  title: "雅加达租车_印尼商务考察包车_机场接送 - 阿敏租车（中资中文服务）",
+  description:
+    "阿敏租车是雅加达中文用车团队，创始团队驻印尼6年。提供印尼商务考察包车、机场接送、定制游玩行程，中文司机服务，全包价无隐形消费。微信Amin-car。",
+  alternates: {
+    canonical: "/"
+  },
+  openGraph: {
+    title: "雅加达租车_印尼商务考察包车_机场接送",
+    description:
+      "雅加达中资租车团队，提供商务考察包车、机场接送、长期月租和中文司机服务。",
+    url: siteUrl,
+    siteName,
+    type: "website"
+  }
+};
 
-const vehicles = [
+const serviceCards = [
   {
-    name: "经济型",
-    desc: "适合城市短途、机场接送与轻量行程。"
+    icon: "🚐",
+    title: "商务考察包车",
+    body:
+      "考察团全程用车，含中文司机与行程规划建议。卡拉旺、芝卡朗、万隆等工业园区路线熟门熟路。",
+    href: "/business-charter.html"
   },
   {
-    name: "商务型",
-    desc: "适合客户接待、会议通勤与全天候包车。"
+    icon: "✈️",
+    title: "机场接送",
+    body:
+      "苏加诺-哈达机场举牌接机，落地微信直联司机，无需当地电话卡，24小时服务。",
+    href: "/airport-transfer.html"
   },
   {
-    name: "Alphard",
-    desc: "高端接待首选，重视舒适度与商务形象。"
-  },
-  {
-    name: "Hiace",
-    desc: "适合团队出行、考察团与多点行程。"
+    icon: "🏝️",
+    title: "定制游玩行程",
+    body:
+      "千岛出海、万隆火山牛奶湖、茂物野生动物园、唐格朗射击体验，中文司机兼导游一站式安排。",
+    href: "/fleet-price.html"
   }
 ];
 
-const reviews = [
-  "司机中文沟通顺畅，雅加达商务拜访路线安排得很稳。",
-  "巴厘岛家庭出游用车体验很好，接送准时，车内干净。",
-  "机场落地后直接对接，省去了很多沟通成本。"
-];
-
-const faqs = [
+const whyItems = [
   {
-    q: "可以安排中文司机吗？",
-    a: "可以。具体以城市、日期和车型排班为准，建议提前提交需求。"
+    title: "中国团队，沟通零障碍",
+    body:
+      "创始团队为驻印尼6年的中国人，深耕本地商务接待。全程中文对接，按中国商务习惯服务，出了问题找得到人。"
   },
   {
-    q: "是否支持机场接送？",
-    a: "支持雅加达、巴厘岛等主要机场接送，可按航班时间安排等候。"
+    title: "全包价，无隐形消费",
+    body: "报价即含司机、油费、过路费、停车费。一口价，结账时不会多出任何名目。"
   },
   {
-    q: "商务考察可以多点用车吗？",
-    a: "可以。请提前说明城市、人数、拜访点和预计用车时长。"
+    title: "商务级司机标准",
+    body:
+      "提前15分钟到位、熟悉工业园区与政商楼宇落客点、车上常备饮用水，懂商务场景的分寸。"
   },
   {
-    q: "留资后多久回复？",
-    a: "收到需求后会通过 WhatsApp、微信或邮箱与你确认细节。"
+    title: "对公凭证齐全",
+    body:
+      "行程单、服务合同、结算凭证一应俱全，支持人民币与对公转账，企业报销无忧。"
   }
 ];
 
 export default function Home() {
   return (
-    <main className="bg-white text-ink">
+    <PageShell active="/">
+      <JsonLd data={localBusinessSchema} />
+      <JsonLd data={faqSchema(homeFaqs)} />
+
       <section className="relative overflow-hidden bg-ink text-white">
-        <div className="absolute inset-0">
-          <Image
-            src="/hero-car-service.png"
-            alt="印尼高端商务租车服务"
-            fill
-            priority
-            className="object-cover opacity-45"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/78 to-ink" />
-        </div>
-
-        <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
-          <Link href="/" className="text-base font-semibold tracking-wide">
-            Amin Zuche
-          </Link>
-          <a
-            href="#contact"
-            className="rounded-md border border-white/20 px-4 py-2 text-sm font-medium text-white transition hover:border-gold hover:text-gold"
-          >
-            联系我们
-          </a>
-        </header>
-
-        <div className="relative z-10 mx-auto grid min-h-[720px] max-w-6xl content-end px-5 pb-16 pt-20 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:gap-12 lg:pb-24">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl font-semibold leading-tight tracking-normal sm:text-5xl lg:text-6xl">
-              印尼租车｜雅加达｜巴厘岛｜中文司机
+        <div className="mx-auto grid min-h-[660px] max-w-6xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_0.8fr] lg:items-center lg:py-24">
+          <div>
+            <span className="text-xs font-bold tracking-[0.24em] text-gold">
+              中资团队 · 驻印尼6年
+            </span>
+            <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-tight tracking-normal sm:text-6xl">
+              中国企业来印尼，
+              <br />
+              <em className="not-italic text-gold">第一程</em>交给阿敏
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
-              为中国游客、商务考察、驻外人员提供印尼包车、机场接送和商务用车服务。
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
+              商务考察包车 · 机场接送 · 定制游玩行程。创始团队驻印尼6年、接待过数十个中国考察团，懂中国企业的节奏，也懂印尼的路。
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#contact"
-                className="rounded-md bg-gold px-6 py-4 text-center text-sm font-semibold text-ink shadow-business transition hover:bg-[#d5b56d]"
+                href={whatsappUrl}
+                className="rounded-md bg-[#dc2626] px-6 py-4 text-center text-sm font-semibold text-white shadow-business transition hover:bg-[#b91c1c]"
               >
-                WhatsApp咨询
+                WhatsApp 立即咨询
               </a>
-              <a
-                href="#lead-form"
-                className="rounded-md border border-white/25 px-6 py-4 text-center text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+              <Link
+                href="/fleet-price.html"
+                className="rounded-md border border-white/20 px-6 py-4 text-center text-sm font-semibold text-white transition hover:border-white"
               >
-                提交用车需求
-              </a>
+                查看车型价格
+              </Link>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-2 text-sm text-white/72">
+              {["全包价无隐形消费", "中文司机", "对公凭证齐全", "接待数十个考察团"].map(
+                (item) => (
+                  <span key={item} className="rounded-md bg-white/8 px-3 py-2">
+                    ✓ {item}
+                  </span>
+                )
+              )}
             </div>
           </div>
 
-          <div className="mt-12 rounded-md border border-white/10 bg-white/8 p-5 backdrop-blur lg:mt-0">
-            <p className="text-sm font-medium text-gold">服务范围</p>
-            <div className="mt-4 grid grid-cols-2 gap-3 text-sm text-white/82">
-              {services.map((service) => (
-                <span key={service} className="border-t border-white/12 pt-3">
-                  {service}
-                </span>
+          <aside className="rounded-md border border-white/10 bg-white/8 p-5 shadow-business backdrop-blur">
+            <h2 className="text-lg font-semibold text-gold">📋 考察团行程单 · 示例</h2>
+            <div className="mt-5 divide-y divide-white/10 text-sm text-white/72">
+              {[
+                ["D1 机场接机 → 市区酒店", "7座 Fortuner"],
+                ["D2 投资部 · 商协会拜访", "市区全天"],
+                ["D3 卡拉旺园区考察", "06:30 出发"],
+                ["D4 雅加达 → 万隆", "跨城包车"],
+                ["D5 补充会议 → 送机", "提前3.5h"]
+              ].map(([left, right]) => (
+                <div key={left} className="flex justify-between gap-4 py-3">
+                  <span>{left}</span>
+                  <span className="text-white/45">{right}</span>
+                </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
-        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-normal text-ink">
-              覆盖印尼主流出行场景
-            </h2>
-            <p className="mt-4 text-base leading-7 text-ink/65">
-              从落地接机到商务拜访，从家庭旅行到长期驻外用车，按城市、人数和行程安排匹配车辆与司机。
+            <p className="mt-4 text-sm leading-6 text-white/52">
+              按雅加达堵车规律倒排行程，是我们最常被夸的服务。
             </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {services.map((service) => (
-              <article
-                key={service}
-                className="rounded-md border border-ink/10 bg-white p-5 shadow-sm"
-              >
-                <h3 className="text-lg font-semibold text-ink">{service}</h3>
-                <p className="mt-3 text-sm leading-6 text-ink/60">
-                  提前确认行程节点、用车时长与沟通语言，适合需要可靠安排的中文客户。
-                </p>
-              </article>
-            ))}
-          </div>
+          </aside>
         </div>
-      </section>
-
-      <section className="bg-sand/70 py-16 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <h2 className="text-3xl font-semibold tracking-normal text-ink">
-                车型选择
-              </h2>
-              <p className="mt-4 max-w-2xl text-base leading-7 text-ink/65">
-                按预算、人数、行李和接待规格选择车型，兼顾舒适度与行程效率。
-              </p>
-            </div>
-          </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {vehicles.map((vehicle) => (
-              <article
-                key={vehicle.name}
-                className="rounded-md bg-white p-6 shadow-sm ring-1 ring-ink/8"
-              >
-                <h3 className="text-xl font-semibold text-ink">{vehicle.name}</h3>
-                <p className="mt-4 text-sm leading-6 text-ink/62">
-                  {vehicle.desc}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
+        <RouteLine />
       </section>
 
       <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
-        <h2 className="text-3xl font-semibold tracking-normal text-ink">
-          客户评价
-        </h2>
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
-          {reviews.map((review) => (
-            <figure
-              key={review}
+        <SectionHeading tag="核心服务" title="三件事，做到雅加达中文用车里最稳" />
+        <div className="grid gap-4 lg:grid-cols-3">
+          {serviceCards.map((card) => (
+            <article
+              key={card.title}
               className="rounded-md border border-ink/10 bg-white p-6 shadow-sm"
             >
-              <blockquote className="text-base leading-7 text-ink/76">
-                “{review}”
-              </blockquote>
-              <figcaption className="mt-5 text-sm font-medium text-gold">
-                中国客户评价
-              </figcaption>
-            </figure>
+              <div className="text-3xl">{card.icon}</div>
+              <h3 className="mt-5 text-xl font-semibold text-ink">
+                <Link href={card.href}>{card.title}</Link>
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-ink/62">{card.body}</p>
+              <Link
+                href={card.href}
+                className="mt-5 inline-block text-sm font-semibold text-[#9f1d1d]"
+              >
+                了解详情 →
+              </Link>
+            </article>
           ))}
         </div>
       </section>
 
-      <section className="bg-graphite py-16 text-white lg:py-24">
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-normal">FAQ</h2>
-            <p className="mt-4 text-base leading-7 text-white/66">
-              常见用车问题可先参考以下说明，具体报价与排班以提交需求后的确认为准。
-            </p>
-          </div>
-          <div className="divide-y divide-white/12 rounded-md border border-white/12">
-            {faqs.map((item) => (
-              <div key={item.q} className="p-5">
-                <h3 className="text-base font-semibold text-white">{item.q}</h3>
-                <p className="mt-3 text-sm leading-6 text-white/64">{item.a}</p>
-              </div>
-            ))}
-          </div>
+      <section className="bg-sand/70 px-5 py-16 sm:px-8 lg:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading tag="为什么选阿敏" title="在印尼，靠谱比便宜重要" />
+          <FeatureGrid items={whyItems} />
+          <FleetImage />
         </div>
       </section>
 
-      <section
-        id="contact"
-        className="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:py-24"
-      >
-        <div>
-          <h2 className="text-3xl font-semibold tracking-normal text-ink">
-            联系方式
-          </h2>
-          <p className="mt-4 text-base leading-7 text-ink/65">
-            可通过以下方式沟通行程、车型、日期和城市，确认后安排车辆与司机。
-          </p>
-          <div className="mt-8 space-y-4 text-base">
-            <p className="flex justify-between border-b border-ink/10 pb-4">
-              <span className="text-ink/55">WhatsApp</span>
-              <span className="font-medium">占位符</span>
-            </p>
-            <p className="flex justify-between border-b border-ink/10 pb-4">
-              <span className="text-ink/55">微信</span>
-              <span className="font-medium">占位符</span>
-            </p>
-            <p className="flex justify-between border-b border-ink/10 pb-4">
-              <span className="text-ink/55">邮箱</span>
-              <span className="font-medium">占位符</span>
-            </p>
-          </div>
-        </div>
-
-        <form
-          id="lead-form"
-          className="rounded-md bg-ink p-5 text-white shadow-business sm:p-8"
-        >
-          <h2 className="text-2xl font-semibold tracking-normal">提交用车需求</h2>
-          <div className="mt-7 grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-2 text-sm text-white/72">
-              姓名
-              <input className="form-field" name="name" placeholder="请输入姓名" />
-            </label>
-            <label className="grid gap-2 text-sm text-white/72">
-              联系方式
-              <input
-                className="form-field"
-                name="contact"
-                placeholder="WhatsApp / 微信 / 邮箱"
-              />
-            </label>
-            <label className="grid gap-2 text-sm text-white/72">
-              日期
-              <input className="form-field" name="date" type="date" />
-            </label>
-            <label className="grid gap-2 text-sm text-white/72">
-              城市
-              <input className="form-field" name="city" placeholder="雅加达 / 巴厘岛" />
-            </label>
-            <label className="grid gap-2 text-sm text-white/72 sm:col-span-2">
-              需求
-              <textarea
-                className="form-field min-h-32 resize-y"
-                name="request"
-                placeholder="请填写人数、行程、车型偏好和用车时长"
-              />
-            </label>
-          </div>
-          <button
-            type="submit"
-            className="mt-6 w-full rounded-md bg-gold px-6 py-4 text-sm font-semibold text-ink transition hover:bg-[#d5b56d]"
-          >
-            提交按钮
-          </button>
-        </form>
+      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
+        <SectionHeading tag="常见问题" title="来印尼用车，你大概想问这些" />
+        <FAQBlock faqs={homeFaqs} />
       </section>
-    </main>
+
+      <section className="bg-sand/70 px-5 py-16 sm:px-8 lg:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading tag="考察攻略" title="驻印尼6年的一线经验，先看再来" />
+          <GuideCards />
+        </div>
+      </section>
+
+      <CTASection />
+      <ContactCTAForm />
+    </PageShell>
   );
 }
