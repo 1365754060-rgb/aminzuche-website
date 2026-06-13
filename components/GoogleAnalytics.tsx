@@ -23,8 +23,11 @@ function sendPageView(measurementId: string, pagePath: string) {
       window.dataLayer?.push(args);
     };
 
-  gtag("config", measurementId, {
-    page_path: pagePath
+  gtag("event", "page_view", {
+    send_to: measurementId,
+    page_path: pagePath,
+    page_location: window.location.href,
+    page_title: document.title
   });
 }
 
