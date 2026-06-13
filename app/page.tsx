@@ -95,12 +95,12 @@ export default function Home() {
               中资团队 · 驻印尼6年
             </span>
             <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-tight tracking-normal sm:text-6xl">
-              中国企业来印尼，
+              中国企业来印尼考察
               <br />
               <em className="not-italic text-gold">第一程</em>交给阿敏
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-              商务考察包车 · 机场接送 · 定制游玩行程。创始团队驻印尼6年、接待过数十个中国考察团，懂中国企业的节奏，也懂印尼的路。
+              印尼商务考察包车、机场接送、工业园考察用车服务。团队驻印尼6年，服务中国企业考察团、投资团、工厂参访团，熟悉雅加达商务用车、印尼考察包车、中国企业印尼考察、卡拉旺工业园考察、芝卡朗工业园考察、万隆等核心商务路线。
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
