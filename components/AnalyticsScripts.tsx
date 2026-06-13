@@ -1,16 +1,24 @@
 import Script from "next/script";
-import { baiduTongjiId } from "@/lib/site";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { baiduTongjiId, gaMeasurementId } from "@/lib/site";
 
 export function AnalyticsScripts() {
-  if (!baiduTongjiId) {
+  if (!baiduTongjiId && !gaMeasurementId) {
     return null;
   }
 
   return (
-    <Script
-      id="baidu-tongji"
-      src={`https://hm.baidu.com/hm.js?${baiduTongjiId}`}
-      strategy="afterInteractive"
-    />
+    <>
+      {gaMeasurementId ? (
+        <GoogleAnalytics measurementId={gaMeasurementId} />
+      ) : null}
+      {baiduTongjiId ? (
+        <Script
+          id="baidu-tongji"
+          src={`https://hm.baidu.com/hm.js?${baiduTongjiId}`}
+          strategy="afterInteractive"
+        />
+      ) : null}
+    </>
   );
 }

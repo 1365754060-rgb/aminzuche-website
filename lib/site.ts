@@ -10,3 +10,5 @@ export const googleSiteVerification =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 export const baiduTongjiId = process.env.NEXT_PUBLIC_BAIDU_TONGJI_ID;
+
+export const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
