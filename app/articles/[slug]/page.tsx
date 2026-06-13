@@ -69,6 +69,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     mainEntityOfPage: articleUrl(article.slug),
     keywords: article.keywords.join(", ")
   };
+  const faqJsonLd = article.faqs
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: article.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer
+          }
+        }))
+      }
+    : null;
 
   return (
     <main className="bg-white text-ink">
@@ -76,6 +90,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {faqJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      ) : null}
       <article>
         <header className="bg-ink px-5 py-14 text-white sm:px-8 lg:py-20">
           <div className="mx-auto max-w-3xl">
@@ -106,6 +126,29 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </section>
           ))}
 
+          {article.faqs ? (
+            <section className="mt-12">
+              <h2 className="text-2xl font-semibold tracking-normal text-ink">
+                常见问题
+              </h2>
+              <div className="mt-5 divide-y divide-ink/10 rounded-md border border-ink/10 bg-white">
+                {article.faqs.map((faq) => (
+                  <details key={faq.question} className="group p-5">
+                    <summary className="cursor-pointer list-none text-base font-semibold text-ink">
+                      {faq.question}
+                      <span className="float-right text-gold transition group-open:rotate-45">
+                        +
+                      </span>
+                    </summary>
+                    <p className="mt-4 text-sm leading-7 text-ink/64">
+                      {faq.answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
           <div className="mt-12 rounded-md bg-sand/70 p-6">
             <h2 className="text-xl font-semibold text-ink">需要安排印尼用车？</h2>
             <p className="mt-3 text-sm leading-6 text-ink/65">
@@ -118,6 +161,27 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               提交用车需求
             </Link>
           </div>
+
+          <nav className="mt-8 flex flex-wrap gap-3 text-sm font-semibold">
+            <Link
+              href="/"
+              className="rounded-md border border-ink/10 px-4 py-2 text-ink/70 transition hover:border-gold hover:text-ink"
+            >
+              首页
+            </Link>
+            <Link
+              href="/business-charter.html"
+              className="rounded-md border border-ink/10 px-4 py-2 text-ink/70 transition hover:border-gold hover:text-ink"
+            >
+              商务考察包车
+            </Link>
+            <Link
+              href="/contact.html"
+              className="rounded-md border border-ink/10 px-4 py-2 text-ink/70 transition hover:border-gold hover:text-ink"
+            >
+              联系我们
+            </Link>
+          </nav>
         </div>
       </article>
     </main>

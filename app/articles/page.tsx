@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "印尼租车攻略｜Amin Zuche",
     description:
-      "20篇印尼中文租车 SEO 攻略，帮助中国游客、商务考察和驻外人员规划用车。",
+      "印尼中文租车 SEO 攻略，帮助中国游客、商务考察和驻外人员规划用车。",
     url: `${siteUrl}/articles`,
     type: "website"
   }
