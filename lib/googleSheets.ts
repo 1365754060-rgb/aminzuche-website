@@ -13,8 +13,23 @@ export type LeadPayload = {
   request: string;
 };
 
+const leadSheetHeaders = [
+  "提交时间",
+  "公司名称",
+  "联系人姓名",
+  "联系方式",
+  "微信/WhatsApp",
+  "到访日期",
+  "考察人数",
+  "用车城市",
+  "项目类型",
+  "行程需求",
+  "跟进状态",
+  "负责人",
+  "备注"
+];
 const defaultFollowUpStatus = "未联系";
-const crmHeaders = ["跟进状态", "负责人", "备注"];
+const defaultOwner = "阿敏";
 const googleTokenUrl = "https://oauth2.googleapis.com/token";
 const googleSheetsScope = "https://www.googleapis.com/auth/spreadsheets";
 
@@ -229,6 +244,49 @@ async function updateGoogleSheetValues(params: {
   }
 }
 
+async function getGoogleSheetValues(params: {
+  accessToken: string;
+  spreadsheetId: string;
+  range: string;
+}) {
+  const endpoint = `https://sheets.googleapis.com/v4/spreadsheets/${params.spreadsheetId}/values/${encodeURIComponent(
+    params.range
+  )}`;
+  const response = await fetch(endpoint, {
+    headers: {
+      Authorization: `Bearer ${params.accessToken}`
+    }
+  });
+
+  if (!response.ok) {
+    throw await buildGoogleApiError(response);
+  }
+
+  const data = (await response.json()) as { values?: string[][] };
+  return data.values || [];
+}
+
+async function ensureLeadSheetHeaders(params: {
+  accessToken: string;
+  spreadsheetId: string;
+  range: string;
+}) {
+  const values = await getGoogleSheetValues(params);
+  const currentHeaders = values[0] || [];
+  const needsUpdate = leadSheetHeaders.some(
+    (header, index) => currentHeaders[index] !== header
+  );
+
+  if (!needsUpdate) {
+    return;
+  }
+
+  await updateGoogleSheetValues({
+    ...params,
+    values: [leadSheetHeaders]
+  });
+}
+
 export async function appendLeadToGoogleSheet(lead: LeadPayload) {
   let spreadsheetId: string | undefined;
   let sheetName: string | undefined;
@@ -239,12 +297,11 @@ export async function appendLeadToGoogleSheet(lead: LeadPayload) {
     spreadsheetId = config.spreadsheetId;
     sheetName = config.sheetName;
     const accessToken = await getGoogleAccessToken();
-    range = `${sheetName}!K1:M1`;
-    await updateGoogleSheetValues({
+    range = `${sheetName}!A1:M1`;
+    await ensureLeadSheetHeaders({
       accessToken,
       spreadsheetId,
-      range,
-      values: [crmHeaders]
+      range
     });
 
     range = `${sheetName}!A:M`;
@@ -271,7 +328,7 @@ export async function appendLeadToGoogleSheet(lead: LeadPayload) {
             lead.projectType,
             lead.request,
             defaultFollowUpStatus,
-            "",
+            defaultOwner,
             ""
           ]
         ]
