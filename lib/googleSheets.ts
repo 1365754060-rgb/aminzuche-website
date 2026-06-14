@@ -13,6 +13,8 @@ export type LeadPayload = {
   request: string;
 };
 
+const defaultFollowUpStatus = "未联系";
+const crmHeaders = ["跟进状态", "负责人", "备注"];
 const googleTokenUrl = "https://oauth2.googleapis.com/token";
 const googleSheetsScope = "https://www.googleapis.com/auth/spreadsheets";
 
@@ -202,6 +204,31 @@ async function getGoogleAccessToken() {
   return token.access_token;
 }
 
+async function updateGoogleSheetValues(params: {
+  accessToken: string;
+  spreadsheetId: string;
+  range: string;
+  values: string[][];
+}) {
+  const endpoint = `https://sheets.googleapis.com/v4/spreadsheets/${params.spreadsheetId}/values/${encodeURIComponent(
+    params.range
+  )}?valueInputOption=USER_ENTERED`;
+  const response = await fetch(endpoint, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${params.accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      values: params.values
+    })
+  });
+
+  if (!response.ok) {
+    throw await buildGoogleApiError(response);
+  }
+}
+
 export async function appendLeadToGoogleSheet(lead: LeadPayload) {
   let spreadsheetId: string | undefined;
   let sheetName: string | undefined;
@@ -211,9 +238,16 @@ export async function appendLeadToGoogleSheet(lead: LeadPayload) {
     const config = assertGoogleSheetsConfig();
     spreadsheetId = config.spreadsheetId;
     sheetName = config.sheetName;
-    range = `${sheetName}!A:J`;
-
     const accessToken = await getGoogleAccessToken();
+    range = `${sheetName}!K1:M1`;
+    await updateGoogleSheetValues({
+      accessToken,
+      spreadsheetId,
+      range,
+      values: [crmHeaders]
+    });
+
+    range = `${sheetName}!A:M`;
     const endpoint = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(
       range
     )}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
@@ -235,7 +269,10 @@ export async function appendLeadToGoogleSheet(lead: LeadPayload) {
             lead.peopleCount,
             lead.city,
             lead.projectType,
-            lead.request
+            lead.request,
+            defaultFollowUpStatus,
+            "",
+            ""
           ]
         ]
       })

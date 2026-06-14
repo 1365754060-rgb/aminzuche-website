@@ -3,6 +3,7 @@ import {
   LeadPayload,
   appendLeadToGoogleSheet
 } from "@/lib/googleSheets";
+import { sendLeadNotificationEmail } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -70,11 +71,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error }, { status: 400 });
   }
 
-  try {
-    await appendLeadToGoogleSheet({
+  const savedLead = {
       submittedAt: new Date().toISOString(),
       ...lead
-    });
+  };
+
+  try {
+    await appendLeadToGoogleSheet(savedLead);
   } catch (saveError) {
     console.error("Failed to save lead", saveError);
 
@@ -84,6 +87,12 @@ export async function POST(request: Request) {
       },
       { status: 503 }
     );
+  }
+
+  try {
+    await sendLeadNotificationEmail(savedLead);
+  } catch (emailError) {
+    console.error("Failed to send lead notification email", emailError);
   }
 
   return NextResponse.json({ ok: true });
